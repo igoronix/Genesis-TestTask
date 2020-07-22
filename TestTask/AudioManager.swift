@@ -68,13 +68,14 @@ class AudioManager: ObservableObject {
         case .paused:
             if audioPlayer != nil {
                 startPlay()
-            } else {
+            } else if audioRecorder != nil {
                 startRec()
             }
         }
     }
     
     private func pause() {
+        NSLog("Pause")
         switch state {
         case .playing:
             self.audioPlayer?.pause()
@@ -89,21 +90,47 @@ class AudioManager: ObservableObject {
         }
     }
     
+    func nextStateButtonTitle() -> AudioManager.State {
+        let newState: AudioManager.State
+        switch state {
+        case .idle:
+            newState = .playing
+        case .playing:
+            newState = .paused
+        case .recording:
+            newState = .paused
+        case .paused:
+            if audioPlayer != nil {
+                newState = .playing
+            } else if audioRecorder != nil {
+                newState = .recording
+            } else {
+                newState = .idle
+            }
+        }
+        return newState
+    }
+    
     // MARK: - Interuption subscription
     
     private func subscribeForInteruption() {
         interruptionSubscription = NotificationCenter.default
             .publisher(for: AVAudioSession.interruptionNotification)
             .sink() { notification in
-                NSLog("AVAudioSession interruptionNotification: VALUE: \(notification)")
-                
                 guard let info = notification.userInfo,
                     let typeValue = info[AVAudioSessionInterruptionTypeKey] as? UInt,
                     let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
                         return
                 }
                 
-                self.processInteruption(type)
+                let options: AVAudioSession.InterruptionOptions?
+                if let optionsValue = info[AVAudioSessionInterruptionOptionKey] as? UInt {
+                    options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+                } else {
+                    options = nil
+                }
+                
+                self.processInteruption(type, options: options)
         }
     }
     
@@ -112,15 +139,25 @@ class AudioManager: ObservableObject {
         interruptionSubscription = nil
     }
     
-    private func processInteruption(_ type: AVAudioSession.InterruptionType) {
+    private func processInteruption(_ type: AVAudioSession.InterruptionType, options: AVAudioSession.InterruptionOptions?) {
          switch type {
          case .began:
+            let session = AVAudioSession.sharedInstance()
+            try? session.setActive(false)
             pause()
          case .ended:
-            if audioPlayer != nil {
-                startPlay()
+            if options?.contains(.shouldResume) ?? false {
+                let session = AVAudioSession.sharedInstance()
+                if audioPlayer != nil {
+                    try? session.setCategory(.playback)
+                    startPlay()
+                } else if audioRecorder != nil {
+                    try? session.setCategory(.record)
+                    startRec()
+                }
+                try? session.setActive(true)
             } else {
-                startRec()
+                NSLog("AudioSession shoudln't resume")
             }
         default:
             break

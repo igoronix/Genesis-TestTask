@@ -16,7 +16,6 @@ final class MainViewModel: NSObject, ObservableObject {
     @Published private(set) var audioManager = AudioManager()
     
     private var cancellables = Set<AnyCancellable>()
-    private var previous_state = AudioManager.State.idle
     
     override init() {
         let playVM = DurationsViewModel()
@@ -53,41 +52,17 @@ final class MainViewModel: NSObject, ObservableObject {
             .sink { _ in
                 DispatchQueue.main.async {
                     self.objectWillChange.send()
-                    let nextState = self.nextStateButtonTitle()
+                    let nextState = self.audioManager.nextStateButtonTitle()
                     self.changeStateButtonTitle = nextState.verbTitle
                 }
         }
         .store(in: &cancellables)
         
-        let nextState = nextStateButtonTitle()
+        let nextState = self.audioManager.nextStateButtonTitle()
         changeStateButtonTitle = nextState.verbTitle
     }
     
-    private func nextStateButtonTitle() -> AudioManager.State {
-        let newState: AudioManager.State
-        switch audioManager.state {
-        case .idle:
-            newState = .playing
-        case .playing:
-            newState = .paused
-        case .recording:
-            newState = .paused
-        case .paused:
-            switch previous_state {
-            case .playing:
-                newState = .playing
-            case .recording:
-                newState = .recording
-            default:
-                newState = audioManager.state
-            }
-        }
-        return newState
-    }
-    
-    func toggleState() {
-        previous_state = audioManager.state
-        
+    func toggleState() {        
         audioManager.playInterval = playDurationVM.dataSource[playDurationVM.selectedDuration!].interval
         audioManager.recInterval = recDurationVM.dataSource[recDurationVM.selectedDuration!].interval
         audioManager.toggleState()
