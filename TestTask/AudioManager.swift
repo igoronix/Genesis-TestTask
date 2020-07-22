@@ -7,7 +7,6 @@
 //
 
 import AVFoundation
-import Combine
 
 class AudioManager: ObservableObject {
     private lazy var recSettings: [String : Any] = {
@@ -51,7 +50,7 @@ class AudioManager: ObservableObject {
     @Published private(set) var state = State.idle
     private var audioPlayer: AVAudioPlayer?
     private var audioRecorder: AVAudioRecorder?
-    private var timer: Timer?
+    private var timer: DispatchSourceTimer?
     
     var playInterval: TimeInterval!
     var recInterval: TimeInterval!
@@ -133,8 +132,11 @@ class AudioManager: ObservableObject {
                 audioPlayer.prepareToPlay()
                 audioPlayer.numberOfLoops = -1
                 
-                let timer = Timer(timeInterval: self.playInterval)
-                timer.eventHandler = {
+                
+                let timer = DispatchSource.makeTimerSource()
+                timer.schedule(deadline: .now() + self.playInterval, repeating: .never)
+                timer.setEventHandler {
+                    
                     NSLog("Playing Timer Fired")
                     self.audioPlayer?.stop()
                     self.audioPlayer = nil
@@ -190,8 +192,9 @@ class AudioManager: ObservableObject {
                 self.audioRecorder?.prepareToRecord()
                 try session.setActive(true)
                 
-                let timer = Timer(timeInterval: self.recInterval)
-                timer.eventHandler = {
+                let timer = DispatchSource.makeTimerSource()
+                timer.schedule(deadline: .now() + self.recInterval, repeating: .never)
+                timer.setEventHandler {
                     NSLog("Rec Timer Fired")
                     self.audioRecorder?.stop()
                     self.audioRecorder = nil
