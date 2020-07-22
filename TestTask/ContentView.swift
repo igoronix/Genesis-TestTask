@@ -14,7 +14,7 @@ struct ContentView: View {
     var body: some View {
         VStack(alignment: .center) {
             Spacer(minLength: 200)
-            Text(self.viewModel.state.rawValue)
+            Text(self.viewModel.audioManager.state.rawValue)
                 .bold()
                 .font(Font.system(size: 24))
             Spacer()

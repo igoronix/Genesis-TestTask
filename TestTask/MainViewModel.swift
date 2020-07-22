@@ -7,35 +7,18 @@
 //
 
 import Foundation
+import Combine
 
-extension MainViewModel {
-    enum State: String {
-        case idle, playing, recording, paused
-        
-        var verbTitle: String {
-            switch self {
-            case .idle:
-                return ""
-            case .playing:
-                return "Play"
-            case .recording:
-                return "Record"
-            case .paused:
-                return "Pause"
-            }
-        }
-    }
-}
-
-final class MainViewModel: ObservableObject {
+final class MainViewModel: NSObject, ObservableObject {
     @Published private(set) var playDurationVM: DurationsViewModel
     @Published private(set) var recDurationVM: DurationsViewModel
-    @Published private(set) var state = State.idle
     @Published private(set) var changeStateButtonTitle = ""
+    @Published private(set) var audioManager = AudioManager()
     
-    private var previous_state = State.idle
+    private var cancellables = Set<AnyCancellable>()
+    private var previous_state = AudioManager.State.idle
     
-    init() {
+    override init() {
         let playVM = DurationsViewModel()
         
         playVM.title = "Sound Timer"
@@ -64,13 +47,25 @@ final class MainViewModel: ObservableObject {
         recVM.selectedDuration = 1
         self.recDurationVM = recVM
         
+        super.init()
+        
+        audioManager.objectWillChange
+            .sink { _ in
+                DispatchQueue.main.async {
+                    self.objectWillChange.send()
+                    let nextState = self.nextStateButtonTitle()
+                    self.changeStateButtonTitle = nextState.verbTitle
+                }
+        }
+        .store(in: &cancellables)
+        
         let nextState = nextStateButtonTitle()
         changeStateButtonTitle = nextState.verbTitle
     }
     
-    func nextStateButtonTitle() -> State {
-        let newState: State
-        switch state {
+    private func nextStateButtonTitle() -> AudioManager.State {
+        let newState: AudioManager.State
+        switch audioManager.state {
         case .idle:
             newState = .playing
         case .playing:
@@ -84,18 +79,17 @@ final class MainViewModel: ObservableObject {
             case .recording:
                 newState = .recording
             default:
-                newState = state
+                newState = audioManager.state
             }
         }
         return newState
     }
     
     func toggleState() {
-        let newState = nextStateButtonTitle()
-        previous_state = state
-        state = newState
+        previous_state = audioManager.state
         
-        let nextState = nextStateButtonTitle()
-        changeStateButtonTitle = nextState.verbTitle
+        audioManager.playInterval = playDurationVM.dataSource[playDurationVM.selectedDuration!].interval
+        audioManager.recInterval = recDurationVM.dataSource[recDurationVM.selectedDuration!].interval
+        audioManager.toggleState()
     }
 }
