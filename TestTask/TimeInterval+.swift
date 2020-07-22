@@ -9,7 +9,6 @@
 import Foundation
 
 extension TimeInterval {
-    
     func stringFromTimeInterval() -> String {
         let time = NSInteger(self)
         

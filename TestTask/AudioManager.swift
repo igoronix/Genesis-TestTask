@@ -7,6 +7,7 @@
 //
 
 import AVFoundation
+import Combine
 
 class AudioManager: ObservableObject {
     private lazy var recSettings: [String : Any] = {
@@ -51,6 +52,7 @@ class AudioManager: ObservableObject {
     private var audioPlayer: AVAudioPlayer?
     private var audioRecorder: AVAudioRecorder?
     private var timer: DispatchSourceTimer?
+    private var interruptionSubscription: AnyCancellable?
     
     var playInterval: TimeInterval!
     var recInterval: TimeInterval!
@@ -82,6 +84,44 @@ class AudioManager: ObservableObject {
             self.audioRecorder?.pause()
             self.timer?.suspend()
             self.state = .paused
+        default:
+            break
+        }
+    }
+    
+    // MARK: - Interuption subscription
+    
+    private func subscribeForInteruption() {
+        interruptionSubscription = NotificationCenter.default
+            .publisher(for: AVAudioSession.interruptionNotification)
+            .sink() { notification in
+                NSLog("AVAudioSession interruptionNotification: VALUE: \(notification)")
+                
+                guard let info = notification.userInfo,
+                    let typeValue = info[AVAudioSessionInterruptionTypeKey] as? UInt,
+                    let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
+                        return
+                }
+                
+                self.processInteruption(type)
+        }
+    }
+    
+    private func unsubscribe() {
+        interruptionSubscription?.cancel()
+        interruptionSubscription = nil
+    }
+    
+    private func processInteruption(_ type: AVAudioSession.InterruptionType) {
+         switch type {
+         case .began:
+            pause()
+         case .ended:
+            if audioPlayer != nil {
+                startPlay()
+            } else {
+                startRec()
+            }
         default:
             break
         }
@@ -132,15 +172,16 @@ class AudioManager: ObservableObject {
                 audioPlayer.prepareToPlay()
                 audioPlayer.numberOfLoops = -1
                 
+                self.subscribeForInteruption()
                 
                 let timer = DispatchSource.makeTimerSource()
                 timer.schedule(deadline: .now() + self.playInterval, repeating: .never)
                 timer.setEventHandler {
-                    
                     NSLog("Playing Timer Fired")
                     self.audioPlayer?.stop()
                     self.audioPlayer = nil
                     self.timer = nil
+                    self.unsubscribe()
                     
                     self.startRec()
                 }
@@ -191,6 +232,7 @@ class AudioManager: ObservableObject {
                 self.audioRecorder = try AVAudioRecorder(url: self.recFileURL, settings: self.recSettings)
                 self.audioRecorder?.prepareToRecord()
                 try session.setActive(true)
+                self.subscribeForInteruption()
                 
                 let timer = DispatchSource.makeTimerSource()
                 timer.schedule(deadline: .now() + self.recInterval, repeating: .never)
@@ -201,6 +243,7 @@ class AudioManager: ObservableObject {
                     self.timer = nil
                     self.state = .idle
                     try? session.setActive(false)
+                    self.unsubscribe()
                 }
                 self.timer = timer
                 completion(nil)
