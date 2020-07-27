@@ -9,7 +9,7 @@
 import AVFoundation
 import Combine
 
-class AudioManager: ObservableObject {
+final class AudioManager: ObservableObject {
     private lazy var recSettings: [String : Any] = {
         [AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
          AVSampleRateKey: 44100,
