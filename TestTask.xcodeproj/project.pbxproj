@@ -95,18 +95,8 @@
 		AA38620724C57EF100C16AAD /* TestTask */ = {
 			isa = PBXGroup;
 			children = (
-				AA53FD9C24C5C4ED00871231 /* DurationSelector */,
-				AA38620824C57EF100C16AAD /* AppDelegate.swift */,
-				AA38620C24C57EF100C16AAD /* ContentView.swift */,
-				AA53FDAA24C5D6A500871231 /* MainViewModel.swift */,
-				AA53FDAE24C7241300871231 /* AudioManager.swift */,
-				AA38620A24C57EF100C16AAD /* SceneDelegate.swift */,
-				AA53FDA324C5CCA900871231 /* TimeInterval+.swift */,
-				AA53FDAC24C71BED00871231 /* nature.m4a */,
-				AA38620E24C57EF400C16AAD /* Assets.xcassets */,
-				AA38621324C57EF400C16AAD /* LaunchScreen.storyboard */,
-				AA38621624C57EF400C16AAD /* Info.plist */,
-				AA38621024C57EF400C16AAD /* Preview Content */,
+				AA73872024CF4C5400B7E043 /* Sources */,
+				AA73872124CF4C6E00B7E043 /* Resources */,
 			);
 			path = TestTask;
 			sourceTree = "<group>";
@@ -137,6 +127,32 @@
 				AA53FDA824C5CEC200871231 /* DurationViewModel.swift */,
 			);
 			path = DurationSelector;
+			sourceTree = "<group>";
+		};
+		AA73872024CF4C5400B7E043 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				AA53FD9C24C5C4ED00871231 /* DurationSelector */,
+				AA38620824C57EF100C16AAD /* AppDelegate.swift */,
+				AA38620C24C57EF100C16AAD /* ContentView.swift */,
+				AA53FDAA24C5D6A500871231 /* MainViewModel.swift */,
+				AA53FDAE24C7241300871231 /* AudioManager.swift */,
+				AA38620A24C57EF100C16AAD /* SceneDelegate.swift */,
+				AA53FDA324C5CCA900871231 /* TimeInterval+.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		AA73872124CF4C6E00B7E043 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AA53FDAC24C71BED00871231 /* nature.m4a */,
+				AA38620E24C57EF400C16AAD /* Assets.xcassets */,
+				AA38621324C57EF400C16AAD /* LaunchScreen.storyboard */,
+				AA38621624C57EF400C16AAD /* Info.plist */,
+				AA38621024C57EF400C16AAD /* Preview Content */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -403,10 +419,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"TestTask/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"TestTask/Resources/Preview Content\"";
 				DEVELOPMENT_TEAM = RJBKWPCQW8;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = TestTask/Info.plist;
+				INFOPLIST_FILE = TestTask/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -423,10 +439,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"TestTask/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"TestTask/Resources/Preview Content\"";
 				DEVELOPMENT_TEAM = RJBKWPCQW8;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = TestTask/Info.plist;
+				INFOPLIST_FILE = TestTask/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
