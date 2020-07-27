@@ -77,14 +77,10 @@ final class AudioManager: ObservableObject {
     private func pause() {
         print("Pause")
         switch state {
-        case .playing:
-            self.audioPlayer?.pause()
-            self.timer?.suspend()
-            self.state = .paused
-        case .recording:
-            self.audioRecorder?.pause()
-            self.timer?.suspend()
-            self.state = .paused
+        case .playing, .recording:
+            audioPlayer?.pause()
+            timer?.suspend()
+            state = .paused
         default:
             break
         }
@@ -95,9 +91,7 @@ final class AudioManager: ObservableObject {
         switch state {
         case .idle:
             newState = .playing
-        case .playing:
-            newState = .paused
-        case .recording:
+        case .playing, .recording:
             newState = .paused
         case .paused:
             if audioPlayer != nil {
@@ -146,20 +140,21 @@ final class AudioManager: ObservableObject {
             try? session.setActive(false)
             pause()
          case .ended:
-            if options?.contains(.shouldResume) ?? false {
-                let session = AVAudioSession.sharedInstance()
-                if audioPlayer != nil {
-                    try? session.setCategory(.playback)
-                    startPlay()
-                } else if audioRecorder != nil {
-                    try? session.setCategory(.record)
-                    startRec()
-                }
-                try? session.setActive(true)
-            } else {
+            guard !(options?.contains(.shouldResume) ?? false) else {
                 print("AudioSession shoudln't resume")
+                break
             }
-        default:
+            
+            let session = AVAudioSession.sharedInstance()
+            if audioPlayer != nil {
+                try? session.setCategory(.playback)
+                startPlay()
+            } else if audioRecorder != nil {
+                try? session.setCategory(.record)
+                startRec()
+            }
+            try? session.setActive(true)
+         default:
             break
         }
     }
@@ -168,32 +163,33 @@ final class AudioManager: ObservableObject {
     
     private func startPlay() {
         guard playInterval > 0 else {
-            self.startRec()
+            startRec()
             return
         }
         
         func turnOnPlaying() {
             print("PLAY")
-            self.state = .playing
-            self.timer?.resume()
-            self.audioPlayer?.play()
+            state = .playing
+            timer?.resume()
+            audioPlayer?.play()
         }
         
-        if audioPlayer == nil {
-            initPlayer() { error in
-                if error == nil {
-                    turnOnPlaying()
-                } else {
-                    print("turn On playing failed: \(String(describing: error))")
-                }
-            }
-        } else {
+        guard audioPlayer == nil else {
             turnOnPlaying()
+            return
+        }
+        
+        initPlayer() { error in
+            if error == nil {
+                turnOnPlaying()
+            } else {
+                print("turn On playing failed: \(String(describing: error))")
+            }
         }
     }
     
     private func initPlayer(_ completion: @escaping (Error?) -> Void) {
-        guard let data = try? Data(contentsOf: URL(fileURLWithPath: self.audioFilePath)) else {
+        guard let data = try? Data(contentsOf: URL(fileURLWithPath: audioFilePath)) else {
             completion(AudioManagerError.notRetrieveAudioFile)
             return
         }
@@ -241,21 +237,22 @@ final class AudioManager: ObservableObject {
         
         func turnOnRecording() {
             print("REC")
-            self.state = .recording
-            self.timer?.resume()
-            self.audioRecorder?.record()
+            state = .recording
+            timer?.resume()
+            audioRecorder?.record()
         }
         
-        if audioRecorder == nil {
-            initRecording { error in
-                if error == nil {
-                    turnOnRecording()
-                } else {
-                    print("turn On recoding failed: \(String(describing: error))")
-                }
-            }
-        } else {
+        guard audioRecorder == nil else {
             turnOnRecording()
+            return
+        }
+        
+        initRecording { error in
+            if error == nil {
+                turnOnRecording()
+            } else {
+                print("turn On recoding failed: \(String(describing: error))")
+            }
         }
     }
     
