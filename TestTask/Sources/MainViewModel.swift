@@ -22,12 +22,12 @@ final class MainViewModel: NSObject, ObservableObject {
         
         playVM.title = "Sound Timer"
         playVM.dataSource = [
-            DurationViewModel(duration: Duration(interval: -1)),
-            DurationViewModel(duration: Duration(interval: 60)),
-            DurationViewModel(duration: Duration(interval: 300)),
-            DurationViewModel(duration: Duration(interval: 600)),
-            DurationViewModel(duration: Duration(interval: 900)),
-            DurationViewModel(duration: Duration(interval: 1200))
+            DurationViewModel(duration: -1),
+            DurationViewModel(duration: 60),
+            DurationViewModel(duration: 300),
+            DurationViewModel(duration: 600),
+            DurationViewModel(duration: 900),
+            DurationViewModel(duration: 1200)
         ]
         playVM.selectedDuration = 2
         self.playDurationVM = playVM
@@ -35,13 +35,13 @@ final class MainViewModel: NSObject, ObservableObject {
         let recVM = DurationsViewModel()
         recVM.title = "Recording Duration"
         recVM.dataSource = [
-            DurationViewModel(duration: Duration(interval: -1)),
-            DurationViewModel(duration: Duration(interval: 300)),
-            DurationViewModel(duration: Duration(interval: 3600)),
-            DurationViewModel(duration: Duration(interval: 2*3600)),
-            DurationViewModel(duration: Duration(interval: 3*3600)),
-            DurationViewModel(duration: Duration(interval: 4*3600)),
-            DurationViewModel(duration: Duration(interval: 5*3600)),
+            DurationViewModel(duration: -1),
+            DurationViewModel(duration: 300),
+            DurationViewModel(duration: 3600),
+            DurationViewModel(duration: 2*3600),
+            DurationViewModel(duration: 3*3600),
+            DurationViewModel(duration: 4*3600),
+            DurationViewModel(duration: 5*3600),
         ]
         recVM.selectedDuration = 1
         self.recDurationVM = recVM

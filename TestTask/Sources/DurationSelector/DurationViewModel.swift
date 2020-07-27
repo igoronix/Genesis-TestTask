@@ -12,8 +12,8 @@ final class DurationViewModel: ObservableObject {
     @Published var duration: String
     @Published var interval: TimeInterval
     
-    init(duration: Duration) {
-        self.duration = duration.interval >= 0 ? duration.interval.stringFromTimeInterval() : "off"
-        self.interval = duration.interval
+    init(duration: TimeInterval) {
+        self.duration = duration >= 0 ? duration.stringFromTimeInterval() : "off"
+        self.interval = duration
     }
 }

@@ -14,7 +14,6 @@
 		AA38621224C57EF400C16AAD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA38621124C57EF400C16AAD /* Preview Assets.xcassets */; };
 		AA38621524C57EF400C16AAD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA38621324C57EF400C16AAD /* LaunchScreen.storyboard */; };
 		AA38622024C57EF500C16AAD /* TestTaskTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA38621F24C57EF500C16AAD /* TestTaskTests.swift */; };
-		AA53FD9E24C5C50300871231 /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA53FD9D24C5C50300871231 /* Duration.swift */; };
 		AA53FDA024C5C53D00871231 /* DurationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA53FD9F24C5C53D00871231 /* DurationsViewModel.swift */; };
 		AA53FDA224C5C75800871231 /* DurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA53FDA124C5C75800871231 /* DurationView.swift */; };
 		AA53FDA424C5CCA900871231 /* TimeInterval+.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA53FDA324C5CCA900871231 /* TimeInterval+.swift */; };
@@ -46,7 +45,6 @@
 		AA38621B24C57EF500C16AAD /* TestTaskTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestTaskTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA38621F24C57EF500C16AAD /* TestTaskTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTaskTests.swift; sourceTree = "<group>"; };
 		AA38622124C57EF500C16AAD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AA53FD9D24C5C50300871231 /* Duration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Duration.swift; sourceTree = "<group>"; };
 		AA53FD9F24C5C53D00871231 /* DurationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationsViewModel.swift; sourceTree = "<group>"; };
 		AA53FDA124C5C75800871231 /* DurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationView.swift; sourceTree = "<group>"; };
 		AA53FDA324C5CCA900871231 /* TimeInterval+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+.swift"; sourceTree = "<group>"; };
@@ -121,7 +119,6 @@
 		AA53FD9C24C5C4ED00871231 /* DurationSelector */ = {
 			isa = PBXGroup;
 			children = (
-				AA53FD9D24C5C50300871231 /* Duration.swift */,
 				AA53FDA124C5C75800871231 /* DurationView.swift */,
 				AA53FD9F24C5C53D00871231 /* DurationsViewModel.swift */,
 				AA53FDA824C5CEC200871231 /* DurationViewModel.swift */,
@@ -260,7 +257,6 @@
 				AA53FDAB24C5D6A500871231 /* MainViewModel.swift in Sources */,
 				AA53FDA924C5CEC200871231 /* DurationViewModel.swift in Sources */,
 				AA38620924C57EF100C16AAD /* AppDelegate.swift in Sources */,
-				AA53FD9E24C5C50300871231 /* Duration.swift in Sources */,
 				AA53FDA424C5CCA900871231 /* TimeInterval+.swift in Sources */,
 				AA38620B24C57EF100C16AAD /* SceneDelegate.swift in Sources */,
 				AA38620D24C57EF100C16AAD /* ContentView.swift in Sources */,
