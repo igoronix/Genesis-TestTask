@@ -75,7 +75,7 @@ final class AudioManager: ObservableObject {
     }
     
     private func pause() {
-        NSLog("Pause")
+        print("Pause")
         switch state {
         case .playing:
             self.audioPlayer?.pause()
@@ -157,7 +157,7 @@ final class AudioManager: ObservableObject {
                 }
                 try? session.setActive(true)
             } else {
-                NSLog("AudioSession shoudln't resume")
+                print("AudioSession shoudln't resume")
             }
         default:
             break
@@ -173,7 +173,7 @@ final class AudioManager: ObservableObject {
         }
         
         func turnOnPlaying() {
-            NSLog("PLAY")
+            print("PLAY")
             self.state = .playing
             self.timer?.resume()
             self.audioPlayer?.play()
@@ -184,7 +184,7 @@ final class AudioManager: ObservableObject {
                 if error == nil {
                     turnOnPlaying()
                 } else {
-                    NSLog("turn On playing failed: \(String(describing: error))")
+                    print("turn On playing failed: \(String(describing: error))")
                 }
             }
         } else {
@@ -214,7 +214,7 @@ final class AudioManager: ObservableObject {
                 let timer = DispatchSource.makeTimerSource()
                 timer.schedule(deadline: .now() + self.playInterval, repeating: .never)
                 timer.setEventHandler {
-                    NSLog("Playing Timer Fired")
+                    print("Playing Timer Fired")
                     self.audioPlayer?.stop()
                     self.audioPlayer = nil
                     self.timer = nil
@@ -240,7 +240,7 @@ final class AudioManager: ObservableObject {
         }
         
         func turnOnRecording() {
-            NSLog("REC")
+            print("REC")
             self.state = .recording
             self.timer?.resume()
             self.audioRecorder?.record()
@@ -251,7 +251,7 @@ final class AudioManager: ObservableObject {
                 if error == nil {
                     turnOnRecording()
                 } else {
-                    NSLog("turn On recoding failed: \(String(describing: error))")
+                    print("turn On recoding failed: \(String(describing: error))")
                 }
             }
         } else {
@@ -274,7 +274,7 @@ final class AudioManager: ObservableObject {
                 let timer = DispatchSource.makeTimerSource()
                 timer.schedule(deadline: .now() + self.recInterval, repeating: .never)
                 timer.setEventHandler {
-                    NSLog("Rec Timer Fired")
+                    print("Rec Timer Fired")
                     self.audioRecorder?.stop()
                     self.audioRecorder = nil
                     self.timer = nil
