@@ -53,15 +53,15 @@ final class AudioManager {
         publisher = statePublisher.eraseToAnyPublisher()
     }
     
-    private func initPlayer(_ completion: @escaping (Error?) -> Void) {
+    private func initPlayer(_ completion: @escaping (Result<Void, Error>) -> Void) {
         guard let data = try? Data(contentsOf: audioFileUrl) else {
-            completion(AudioManagerError.notRetrieveAudioFile)
+            completion(.failure(AudioManagerError.notRetrieveAudioFile))
             return
         }
         
         initAudioSession(.playback) { [weak self] result in
             if case .failure(let error) = result {
-                completion(error)
+                completion(.failure(error))
                 return
             }
             
@@ -70,17 +70,17 @@ final class AudioManager {
                 audioPlayer.prepareToPlay()
                 audioPlayer.numberOfLoops = -1
                 self?.audioPlayer = audioPlayer
-                completion(nil)
+                completion(.success(()))
             } catch {
-                completion(error)
+                completion(.failure(error))
             }
         }
     }
     
-    private func initRecording(_ completion: @escaping (Error?) -> Void) {
+    private func initRecording(_ completion: @escaping (Result<Void, Error>) -> Void) {
         initAudioSession(.record) { [weak self] result in
             if case .failure(let error) = result {
-                completion(error)
+                completion(.failure(error))
                 return
             }
             
@@ -92,9 +92,9 @@ final class AudioManager {
                 let recorder = try AVAudioRecorder(url: self.recFileUrl, settings: self.recSettings)
                 recorder.prepareToRecord()
                 self.audioRecorder = recorder
-                completion(nil)
+                completion(.success(()))
             } catch {
-                completion(error)
+                completion(.failure(error))
             }
         }
     }
@@ -135,12 +135,12 @@ extension AudioManager: AudioManagerProtocol {
             return
         }
         
-        initPlayer() { [weak self] error in
-            if error == nil {
-                turnOnPlaying()
+        initPlayer() { [weak self] result in
+            if case .failure(let error) = result {
+                NSLog("+- AudioManager turn On playing failed: \(error)")
+                self?.statePublisher.send(completion: Subscribers.Completion.failure(error))
             } else {
-                NSLog("+- AudioManager turn On playing failed: \(String(describing: error))")
-                self?.statePublisher.send(completion: Subscribers.Completion.failure(error!))
+                turnOnPlaying()
             }
         }
     }
@@ -158,12 +158,12 @@ extension AudioManager: AudioManagerProtocol {
             return
         }
         
-        initRecording { [weak self] error in
-            if error == nil {
-                turnOnRecording()
+        initRecording { [weak self] result in
+            if case .failure(let error) = result {
+                NSLog("+- AudioManager turn On recoding failed: \(error)")
+                self?.statePublisher.send(completion: Subscribers.Completion.failure(error))
             } else {
-                NSLog("+- AudioManager turn On recoding failed: \(String(describing: error))")
-                self?.statePublisher.send(completion: Subscribers.Completion.failure(error!))
+                turnOnRecording()
             }
         }
     }
