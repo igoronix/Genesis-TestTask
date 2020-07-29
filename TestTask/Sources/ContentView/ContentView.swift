@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var viewModel = MainViewModel()
+    @ObservedObject var viewModel = ContentViewModel()
     
     var body: some View {
         VStack(alignment: .center) {

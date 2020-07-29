@@ -18,9 +18,10 @@
 		AA53FDA224C5C75800871231 /* DurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA53FDA124C5C75800871231 /* DurationView.swift */; };
 		AA53FDA424C5CCA900871231 /* TimeInterval+.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA53FDA324C5CCA900871231 /* TimeInterval+.swift */; };
 		AA53FDA924C5CEC200871231 /* DurationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA53FDA824C5CEC200871231 /* DurationViewModel.swift */; };
-		AA53FDAB24C5D6A500871231 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA53FDAA24C5D6A500871231 /* MainViewModel.swift */; };
+		AA53FDAB24C5D6A500871231 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA53FDAA24C5D6A500871231 /* ContentViewModel.swift */; };
 		AA53FDAD24C71BED00871231 /* nature.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AA53FDAC24C71BED00871231 /* nature.m4a */; };
 		AA53FDAF24C7241300871231 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA53FDAE24C7241300871231 /* AudioManager.swift */; };
+		AA73872724CF5AEE00B7E043 /* AudioStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA73872624CF5AEE00B7E043 /* AudioStateManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,9 +50,10 @@
 		AA53FDA124C5C75800871231 /* DurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationView.swift; sourceTree = "<group>"; };
 		AA53FDA324C5CCA900871231 /* TimeInterval+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+.swift"; sourceTree = "<group>"; };
 		AA53FDA824C5CEC200871231 /* DurationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationViewModel.swift; sourceTree = "<group>"; };
-		AA53FDAA24C5D6A500871231 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
+		AA53FDAA24C5D6A500871231 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		AA53FDAC24C71BED00871231 /* nature.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = nature.m4a; sourceTree = "<group>"; };
 		AA53FDAE24C7241300871231 /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
+		AA73872624CF5AEE00B7E043 /* AudioStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioStateManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,11 +131,10 @@
 		AA73872024CF4C5400B7E043 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				AA73872324CF565100B7E043 /* AudioManager */,
 				AA53FD9C24C5C4ED00871231 /* DurationSelector */,
+				AA73872224CF54D000B7E043 /* ContentView */,
 				AA38620824C57EF100C16AAD /* AppDelegate.swift */,
-				AA38620C24C57EF100C16AAD /* ContentView.swift */,
-				AA53FDAA24C5D6A500871231 /* MainViewModel.swift */,
-				AA53FDAE24C7241300871231 /* AudioManager.swift */,
 				AA38620A24C57EF100C16AAD /* SceneDelegate.swift */,
 				AA53FDA324C5CCA900871231 /* TimeInterval+.swift */,
 			);
@@ -150,6 +151,24 @@
 				AA38621024C57EF400C16AAD /* Preview Content */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		AA73872224CF54D000B7E043 /* ContentView */ = {
+			isa = PBXGroup;
+			children = (
+				AA38620C24C57EF100C16AAD /* ContentView.swift */,
+				AA53FDAA24C5D6A500871231 /* ContentViewModel.swift */,
+			);
+			path = ContentView;
+			sourceTree = "<group>";
+		};
+		AA73872324CF565100B7E043 /* AudioManager */ = {
+			isa = PBXGroup;
+			children = (
+				AA53FDAE24C7241300871231 /* AudioManager.swift */,
+				AA73872624CF5AEE00B7E043 /* AudioStateManager.swift */,
+			);
+			path = AudioManager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -254,7 +273,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA53FDAB24C5D6A500871231 /* MainViewModel.swift in Sources */,
+				AA53FDAB24C5D6A500871231 /* ContentViewModel.swift in Sources */,
+				AA73872724CF5AEE00B7E043 /* AudioStateManager.swift in Sources */,
 				AA53FDA924C5CEC200871231 /* DurationViewModel.swift in Sources */,
 				AA38620924C57EF100C16AAD /* AppDelegate.swift in Sources */,
 				AA53FDA424C5CCA900871231 /* TimeInterval+.swift in Sources */,
@@ -426,7 +446,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.id.genesis.TestTask;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -446,7 +466,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.id.genesis.TestTask;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

@@ -33,7 +33,7 @@ struct DurationView: View {
         }
     }
     
-    func generateActionSheet(options: [String]) -> ActionSheet {
+    private func generateActionSheet(options: [String]) -> ActionSheet {
         let buttons: [Alert.Button] = options.enumerated().map { index, option in
             Alert.Button.default(Text(option)) {
                 self.listViewModel.selectedDuration = index

@@ -1,5 +1,5 @@
 //
-//  MainViewModel.swift
+//  ContentViewModel.swift
 //  TestTask
 //
 //  Created by Igor Dorogokuplia on 20.07.2020.
@@ -9,15 +9,16 @@
 import Foundation
 import Combine
 
-final class MainViewModel: NSObject, ObservableObject {
+final class ContentViewModel: ObservableObject {
     @Published private(set) var playDurationVM: DurationsViewModel
     @Published private(set) var recDurationVM: DurationsViewModel
     @Published private(set) var changeStateButtonTitle = ""
-    @Published private(set) var audioManager = AudioManager()
+    @Published private(set) var audioManager = AudioStateManager(audioFileUrl: ContentViewModel.audioFileURL, recFileUrl: ContentViewModel.recFileURL)
     
     private var cancellables = Set<AnyCancellable>()
+    private var lastState: AudioManagerState = .idle
     
-    override init() {
+    init() {
         let playVM = DurationsViewModel()
         
         playVM.title = "Sound Timer"
@@ -30,7 +31,7 @@ final class MainViewModel: NSObject, ObservableObject {
             DurationViewModel(duration: 1200)
         ]
         playVM.selectedDuration = 2
-        self.playDurationVM = playVM
+        playDurationVM = playVM
         
         let recVM = DurationsViewModel()
         recVM.title = "Recording Duration"
@@ -44,27 +45,58 @@ final class MainViewModel: NSObject, ObservableObject {
             DurationViewModel(duration: 5*3600),
         ]
         recVM.selectedDuration = 1
-        self.recDurationVM = recVM
-        
-        super.init()
+        recDurationVM = recVM
         
         audioManager.objectWillChange
             .sink { _ in
                 DispatchQueue.main.async {
                     self.objectWillChange.send()
-                    let nextState = self.audioManager.nextStateButtonTitle()
-                    self.changeStateButtonTitle = nextState.verbTitle
+                    self.changeStateButtonTitle = self.nextStateButtonTitle()
+                    self.lastState = self.audioManager.state
                 }
         }
         .store(in: &cancellables)
         
-        let nextState = self.audioManager.nextStateButtonTitle()
-        changeStateButtonTitle = nextState.verbTitle
+        changeStateButtonTitle = nextStateButtonTitle()
     }
     
     func toggleState() {        
         audioManager.playInterval = playDurationVM.dataSource[playDurationVM.selectedDuration!].interval
         audioManager.recInterval = recDurationVM.dataSource[recDurationVM.selectedDuration!].interval
         audioManager.toggleState()
+    }
+    
+    // MARK: - Private
+    
+    //TODO: Should be refactored
+    
+    private class var audioFileURL: URL {
+        URL(fileURLWithPath: Bundle.main.path(forResource: "nature", ofType: "m4a")!)
+    }
+    
+    private class var recFileURL: URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths.first!.appendingPathComponent("record_\(Date().description).m4a")
+    }
+    
+    
+    private func nextStateButtonTitle() -> String {
+        let newState: AudioManagerState
+        switch audioManager.state {
+        case .idle:
+            newState = .play
+        case .play, .rec:
+            newState = .pause
+        case .pause:
+            switch lastState {
+            case .play:
+                newState = .play
+            case .rec:
+                newState = .rec
+            default:
+                newState = .idle
+            }
+        }
+        return newState.rawValue
     }
 }
