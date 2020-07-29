@@ -59,11 +59,12 @@ final class AudioManager {
             return
         }
         
-        initAudioSession(.playback) { [weak self] (session, error)  in
-            guard error == nil else {
+        initAudioSession(.playback) { [weak self] result in
+            if case .failure(let error) = result {
                 completion(error)
                 return
             }
+            
             do {
                 let audioPlayer = try AVAudioPlayer(data: data)
                 audioPlayer.prepareToPlay()
@@ -77,11 +78,16 @@ final class AudioManager {
     }
     
     private func initRecording(_ completion: @escaping (Error?) -> Void) {
-        initAudioSession(.record) { [weak self] (session, error) in
-            guard let self = self, error == nil else {
+        initAudioSession(.record) { [weak self] result in
+            if case .failure(let error) = result {
                 completion(error)
                 return
             }
+            
+            guard let self = self else {
+                return
+            }
+            
             do {
                 let recorder = try AVAudioRecorder(url: self.recFileUrl, settings: self.recSettings)
                 recorder.prepareToRecord()
@@ -93,7 +99,7 @@ final class AudioManager {
         }
     }
     
-    private func initAudioSession(_ category: AVAudioSession.Category, completion: @escaping (AVAudioSession, Error?) -> Void) {
+    private func initAudioSession(_ category: AVAudioSession.Category, completion: @escaping (Result<AVAudioSession, Error>) -> Void) {
         let dispatchQueue = DispatchQueue.global(qos: .default)
         dispatchQueue.async {
             let session = AVAudioSession.sharedInstance()
@@ -101,13 +107,13 @@ final class AudioManager {
                 try session.setCategory(category)
                 session.requestRecordPermission() { allowed in
                     guard allowed else {
-                        completion(session, AudioManagerError.notEnoughPermissions)
+                        completion(.failure(AudioManagerError.notEnoughPermissions))
                         return
                     }
-                    completion(session, nil)
+                    completion(.success(session))
                 }
             } catch {
-                completion(session, error)
+                completion(.failure(error))
             }
         }
     }
